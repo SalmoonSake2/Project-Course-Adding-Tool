@@ -16,4 +16,4 @@ Azusa Kaze
 Salmoon Sake
 
 ## 版本資訊
-v1.0 updated in: 2024.12.7
+v1.0 updated in: 2024.12.8
