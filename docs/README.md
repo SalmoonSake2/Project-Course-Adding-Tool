@@ -12,8 +12,8 @@
 以python執行位於src目錄下的run.py檔案即可。
 
 ## 作者
-Azusa Kaze - 蔡瑋辰
-Salmoon Sake - 何宜璘
+Azusa Kaze
+Salmoon Sake
 
 ## 版本資訊
 v1.0 updated in: 2024.12.7
