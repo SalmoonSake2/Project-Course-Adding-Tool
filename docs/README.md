@@ -25,12 +25,13 @@
 
 ## 安裝
 依序於終端Terminal執行以下命令：
+```
 pip install pillow
 pip install ttkbootstrap
 pip install pandas
 pip install requests
 pip install openpyxl
-
+```
 ## 執行
 以python執行位於src目錄下的run.py檔案即可。
 
