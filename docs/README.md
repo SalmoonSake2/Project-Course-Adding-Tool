@@ -40,8 +40,8 @@ pip install openpyxl
 - 大家都是我的好朋友
 
 ## 作者
-Azusa Kaze
-Salmoon Sake
+- Azusa Kaze
+- Salmoon Sake
 
 ## 版本資訊
 v1.0 updated in: 2024.12.9
