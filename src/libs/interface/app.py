@@ -382,15 +382,15 @@ class APP(ttk.Frame):
                 cos_data = get_data_from_index(self.df,self.time_table[time_slot])
 
                 label_formats = (f"課程名稱: {cos_data['cos_cname']}",
-                                f"類別: {cos_data['brief'] if not isinstance(cos_data['brief'],float) else ""}",
+                                f"類別: {cos_data['brief'] if not isinstance(cos_data['brief'],float) else ''}",
                                 f"本期課號: {cos_data['cos_id']}",
                                 f"永久課號: {cos_data['index']}",
-                                f"人數限制: {cos_data['num_limit'] if cos_data['num_limit'] != 9999 else "無限制"}",
+                                f"人數限制: {cos_data['num_limit'] if cos_data['num_limit'] != 9999 else '無限制'}",
                                 f"學分: {cos_data['cos_credit']}",
                                 f"每週時長: {cos_data['cos_hours']}",
                                 f"授課教師: {autonl(str(cos_data['teacher']))}",
                                 f"上課地點: {get_building_string(cos_data['cos_time'])}",
-                                f"備註: {autonl(cos_data['memo'] if not isna(cos_data['memo']) else "")}",
+                                f"備註: {autonl(cos_data['memo'] if not isna(cos_data['memo']) else '')}",
                                 )
 
                 #敘述內容
@@ -400,7 +400,7 @@ class APP(ttk.Frame):
                 #連結是個按鈕
                 if not isna(cos_data['URL']):
                     ttk.Button(master=cos_data_frame,
-                            text=f"連結: {cos_data['URL'] if not isna(cos_data['URL']) else ""}",
+                            text=f"連結: {cos_data['URL'] if not isna(cos_data['URL']) else ''}",
                             style="link",
                             command=lambda link = cos_data['URL']:self.goToLink(link),
                             cursor="hand2").pack(anchor="w")
