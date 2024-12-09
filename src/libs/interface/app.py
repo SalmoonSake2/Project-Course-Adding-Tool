@@ -170,16 +170,17 @@ class APP(ttk.Frame):
 
                 string = self.acysem_entry.get()
 
-                print(string)
                 if not re.match(r"^11\d[12]$",string):return
                 with open("user_data","w",encoding="utf-8") as file:
                     file.write(string[:3]+","+string[3:])
                 
                 import os
+                import sys
 
                 os.remove("timetableDate.xlsx")
                 
                 Messagebox.show_info("內容已更新，請重新開啟軟體","提示",parent=self.ask_acysem_window,alert=True)
+                sys.exit()
 
             self.acysem_confirm_btn = ttk.Button(master=self.ask_acysem_window,
                                                  text="確定",
