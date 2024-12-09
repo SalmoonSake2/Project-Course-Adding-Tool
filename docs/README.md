@@ -11,9 +11,29 @@
 ## 執行
 以python執行位於src目錄下的run.py檔案即可。
 
+首次執行會需要下載課表
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case1.png)
+
+介面說明
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case2.png)
+
+篩選器說明
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case3.png)
+
+搜尋結果介面
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case4.png)
+
+課程詳細資料
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case5.png)
+
+## 已知問題
+- 結果畫面有時無法順利滾動，這是由於scrollframe被物件遮掩所致，滑鼠移一下位置就好了。
+- 希望老師能給A+
+- 大家都是我的好朋友
+
 ## 作者
-Azusa Kaze
-Salmoon Sake
+- Azusa Kaze
+- Salmoon Sake
 
 ## 版本資訊
-v1.0 updated in: 2024.12.8
+v1.0 updated in: 2024.12.9
