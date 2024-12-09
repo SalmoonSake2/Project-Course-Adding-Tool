@@ -8,6 +8,11 @@
 ## 安裝
 若無異常，所有需要的包寫在requirements.txt中。請把它依序安裝
 
+或在終端機執行
+```
+pip install -r requirements.txt
+```
+
 ## 執行
 以python執行位於src目錄下的run.py檔案即可。
 
