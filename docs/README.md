@@ -40,8 +40,7 @@ pip install -r requirements.txt
 課程詳細資料
 ![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case5.png)
 
-## 已知問題
-- 結果畫面有時無法順利滾動，這是由於scrollframe被物件遮掩所致，滑鼠移一下位置就好了。
+## 備註事項
 - 希望老師能給A+
 - 大家都是我的好朋友
 
@@ -50,4 +49,4 @@ pip install -r requirements.txt
 - Salmoon Sake
 
 ## 版本資訊
-v1.0 updated in: 2024.12.9
+v1.1 updated in: 2024.12.12
