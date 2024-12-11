@@ -397,6 +397,15 @@ class APP(ttk.Frame):
                 for label_format in label_formats:
                     ttk.Label(master=cos_data_frame,text=label_format,width=90).pack(anchor="w")
 
+                outline_url = f"https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy={cos_data['acy']}&Sem={cos_data["sem"]}&CrsNo={cos_data["cos_id"]}&lang=zh-tw"
+
+                if not isna(cos_data['crsoutline_type']):
+                    ttk.Button(master=cos_data_frame,
+                            text= "點我看課綱",
+                            style="link",
+                            command=lambda link = outline_url:self.goToLink(link),
+                            cursor="hand2").pack(anchor="w")
+
                 #連結是個按鈕
                 if not isna(cos_data['URL']):
                     ttk.Button(master=cos_data_frame,
