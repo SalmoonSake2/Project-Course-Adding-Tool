@@ -397,7 +397,7 @@ class APP(ttk.Frame):
                 for label_format in label_formats:
                     ttk.Label(master=cos_data_frame,text=label_format,width=90).pack(anchor="w")
 
-                outline_url = f"https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy={cos_data['acy']}&Sem={cos_data["sem"]}&CrsNo={cos_data["cos_id"]}&lang=zh-tw"
+                outline_url = f"https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy={cos_data['acy']}&Sem={cos_data['sem']}&CrsNo={cos_data['cos_id']}&lang=zh-tw"
 
                 if not isna(cos_data['crsoutline_type']):
                     ttk.Button(master=cos_data_frame,
