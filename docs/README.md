@@ -49,4 +49,4 @@ pip install -r requirements.txt
 - Salmoon Sake
 
 ## 版本資訊
-v1.1 updated in: 2024.12.12
+v1.2 updated in: 2024.12.17
