@@ -178,6 +178,14 @@ class APP(ttk.Frame):
                                      style="info-link",
                                      command=switch_event)
         self.acysem_btn.pack(side="left")
+        
+        #分隔線
+        ttk.Canvas(master=self.acysem_frame,width=550).pack(side="left")
+
+        #學分提示
+        ttk.Label(master=self.acysem_frame,text="當前已選學分：").pack(side="left")
+        self.credit_count_var = ttk.IntVar(value=0)
+        ttk.Label(master=self.acysem_frame,textvariable=self.credit_count_var).pack(side="left")
 
         #最下方進度條的位置
         self.progressbar_obj = ttk.Floodgauge(bootstyle=ttk.INFO,
@@ -548,6 +556,8 @@ class APP(ttk.Frame):
                                                 index=self.time_table[time_slot])['cos_cname']
             
             self.table_obj[time_slot].config(text=show_text)
+        
+        self.update_credit_sum()
 
         #關閉視窗
         try:
@@ -567,11 +577,27 @@ class APP(ttk.Frame):
             self.time_table[time_slot] = None
             self.table_obj[time_slot].config(text="")
         
+        self.update_credit_sum()
+        
         try:
             self.result_window.destroy()
             self.envar["is_selecting"] = False
         except:
             ...
+
+    def update_credit_sum(self) -> None:
+        '''
+        更新學分總和
+        '''
+        credit_sum = 0
+        cos_list = []
+        for time_index in self.time_table:
+            cos_index = self.time_table[time_index]
+            if cos_index is not None and cos_index not in cos_list:
+                credit_sum += get_data_from_index(self.df,cos_index)["cos_credit"]
+                cos_list.append(cos_index)
+        
+        self.credit_count_var.set(credit_sum)
 
     def add_filter_event(self) -> None:
         '''
