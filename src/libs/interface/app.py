@@ -14,30 +14,11 @@ import threading
 from tkinter import PhotoImage
 from typing import Callable
 
-from PIL import Image
-from PIL import ImageTk
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledFrame
 from ttkbootstrap.dialogs.dialogs import Messagebox
 from ttkbootstrap.validation import add_regex_validation
 from pandas import DataFrame, isna
-
-if __name__ == "__main__":
-    import sys
-    root = ttk.Window(title="How Dare You?",
-                      size=(400,300))
-    
-    current_path = os.path.dirname(__file__)
-    assets_dir = os.path.join(current_path,"../../../assets")
-    image_name = "how_dare_you.png"
-    image_path = os.path.join(assets_dir,image_name)
-    image = PhotoImage(file=image_path,name="pic")
-
-    ttk.Label(image="pic").pack()
-    ttk.Label(text="請從run.py開始執行").pack()
-
-    root.mainloop()
-    sys.exit()
 
 from libs.course_fetcher.fetch import check_timetable_update
 from libs.course_fetcher.fetch import get_data_from_index
