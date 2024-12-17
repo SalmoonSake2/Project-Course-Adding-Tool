@@ -80,6 +80,8 @@ class APP(ttk.Frame):
         self.envar['has_read_excel'] = False
         self.envar['filter_campus'] = ["YM","GF"]
         self.envar['filter_type'] = []
+        self.envar['filter_name'] = ""
+        self.envar['filter_teacher'] = ""
         self.envar['is_selecting'] = False
 
         #用來儲存所有課程資訊
@@ -168,7 +170,6 @@ class APP(ttk.Frame):
                                                  command=lambda:btn_event())
             self.acysem_confirm_btn.grid(row=0,column=2,padx=10,pady=20)
             
-
         self.acysem_frame = ttk.Frame(master=self.window)
         self.acysem_label = ttk.Label(master=self.acysem_frame,text=f"當前學年:{self.acy}學年度第{self.sem}學期")
         self.acysem_label.pack(side="left")
@@ -579,7 +580,7 @@ class APP(ttk.Frame):
 
         #建立視窗
         self.filter_window = ttk.Toplevel(title="設置篩選器",
-                                          size=(630,295),
+                                          size=(630,320),
                                           resizable=(False,False),
                                           position=gen_pos(self.window),
                                           transient=self.window)
@@ -628,21 +629,41 @@ class APP(ttk.Frame):
             self.type_check_btn[check_btn_index] = check_btn
         
         self.type_filter_frame.pack(anchor="w",padx=10,pady=10)
+
+        self.entry_frame = ttk.Frame(master=self.filter_window)
+        self.entry_frame.pack(anchor="w",padx=10,pady=10)
+
+        #課程名稱
+        self.name_filter_frame = ttk.LabelFrame(master=self.entry_frame,
+                                                text="課程關鍵字")
+        
+        self.name_entry_var = ttk.StringVar()
+        self.name_entry = ttk.Entry(master=self.name_filter_frame,width=20,textvariable=self.name_entry_var)
+        self.name_entry.pack(side="left",padx=10,pady=10)
+
+        self.name_filter_frame.pack(side="left")
+
+        #教師名稱
+        self.teacher_filter_frame = ttk.LabelFrame(master=self.entry_frame,
+                                                text="教師")
+        self.teacher_entry_var = ttk.StringVar()
+        self.teacher_entry = ttk.Entry(master=self.teacher_filter_frame,width=12,textvariable=self.teacher_entry_var)
+        self.teacher_entry.pack(side="left",padx=10,pady=10)
+
+        self.teacher_filter_frame.pack(side="left",padx=20)
         
         #按鈕
-        self.filter_btn_frame = ttk.Frame(master=self.filter_window)
-        self.filter_btn_frame.pack(anchor="e",padx=10,pady=10)
 
-        self.reset_filter_btn = ttk.Button(master=self.filter_btn_frame,
+        self.confirm_filter_btn = ttk.Button(master=self.entry_frame,
+                                             text="確定",
+                                             command=self.confirm_filter_event)
+        self.confirm_filter_btn.pack(side="right",padx=0)
+
+        self.reset_filter_btn = ttk.Button(master=self.entry_frame,
                                            text="重設",
                                            style="primary-outline",
                                            command=self.reset_filter_event)
-        self.reset_filter_btn.pack(side="left",padx=5)
-
-        self.confirm_filter_btn = ttk.Button(master=self.filter_btn_frame,
-                                             text="確定",
-                                             command=self.confirm_filter_event)
-        self.confirm_filter_btn.pack(side="left",padx=5)
+        self.reset_filter_btn.pack(side="right",padx=10)
 
         #讀取環境變數，將物件(被動)與變數同步
 
@@ -654,6 +675,12 @@ class APP(ttk.Frame):
         for tyqe in self.envar["filter_type"]:
             self.type_check_btn[tyqe].invoke()
 
+        #名稱的同步
+        self.name_entry_var.set(self.envar["filter_name"])
+
+        #教師的同步
+        self.teacher_entry_var.set(self.envar["filter_teacher"])
+
     def reset_filter_event(self) -> None:
         '''
         按下重設篩選器的事件
@@ -662,6 +689,8 @@ class APP(ttk.Frame):
         #將變數重設
         self.envar['filter_campus'] = ["YM","GF"]
         self.envar['filter_type'] = []
+        self.envar["filter_name"] = ""
+        self.envar["filter_teacher"] = ""
 
         #將物件配合變數切換
 
@@ -675,6 +704,12 @@ class APP(ttk.Frame):
         for ez_type in EZ_TYPE:
             if (ez_type in self.envar["filter_type"]) != self.type_check_var[ez_type].get():
                 self.type_check_btn[ez_type].invoke()
+        
+        #課程名稱的同步
+        self.name_entry_var.set(self.envar["filter_name"])
+
+        #教師名稱的同步
+        self.teacher_entry_var.set(self.envar["filter_teacher"])
 
     def confirm_filter_event(self) -> None:
         '''
@@ -704,6 +739,12 @@ class APP(ttk.Frame):
                 continue
 
             self.envar['filter_type'].append(type_var_index)
+        
+        #名稱
+        self.envar["filter_name"] = self.name_entry.get()
+
+        #教師
+        self.envar["filter_teacher"] = self.teacher_entry.get()
 
         #關閉視窗
         self.filter_window.destroy()

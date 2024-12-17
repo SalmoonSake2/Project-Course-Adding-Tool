@@ -53,7 +53,7 @@ def find(df: pd.DataFrame, condition: condition_lit, condi_args: str| list[str])
         case "name":
             df_temp = df[df['cos_cname'].apply(lambda x: condi_args[0] in x)]
         case "teacher":
-            df_temp = df[df['teacher'].apply(lambda x: condi_args[0] in x)]
+            df_temp = df[df['teacher'].apply(lambda x: condi_args[0] in str(x))]
     return df_temp
 
 def filter_by_condition(df:pd.DataFrame,envar:dict,time:str=None) -> pd.DataFrame | None:
@@ -79,6 +79,18 @@ def filter_by_condition(df:pd.DataFrame,envar:dict,time:str=None) -> pd.DataFram
         filter_df = find(filter_df,
                             condition="type",
                             condi_args=get_types_from_ezs(envar['filter_type']))
+    
+    #從環境變數中讀取課程名稱關鍵字後套用
+    if envar['filter_name'] != "":
+        filter_df = find(filter_df,
+                            condition="name",
+                            condi_args=envar['filter_name'])
+        
+    #從環境變數中讀取教師名字後套用
+    if envar['filter_teacher'] != "":
+        filter_df = find(filter_df,
+                            condition="teacher",
+                            condi_args=envar['filter_teacher'])
     
     #若沒有搜尋結果，則將結果設為None
     if len(filter_df) == 0:
