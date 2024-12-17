@@ -14,7 +14,7 @@ import pandas as pd
 from libs.interface.ym_mapping import NYCU_CAMPUSES,NYCU_COS_TYPE,NYCU_TIME_SLOTS
 from libs.interface.ym_mapping import get_types_from_ezs
 
-condition_lit = Literal['time','campus','class','type']
+condition_lit = Literal['time','campus','class','type','name',"teacher"]
 TIME_CONST = NYCU_TIME_SLOTS
 CAMPUS_CONST = NYCU_CAMPUSES
 TYPE_CONST = NYCU_COS_TYPE
@@ -50,6 +50,10 @@ def find(df: pd.DataFrame, condition: condition_lit, condi_args: str| list[str])
             if "體育" in condi_args:
                 df_pe = df[df['dep_id'].apply(lambda x: x == "OU9")]
                 df_temp = pd.concat([df_temp,df_pe],axis=0,ignore_index=True)
+        case "name":
+            df_temp = df[df['cos_cname'].apply(lambda x: condi_args[0] in x)]
+        case "teacher":
+            df_temp = df[df['teacher'].apply(lambda x: condi_args[0] in x)]
     return df_temp
 
 def filter_by_condition(df:pd.DataFrame,envar:dict,time:str=None) -> pd.DataFrame | None:
