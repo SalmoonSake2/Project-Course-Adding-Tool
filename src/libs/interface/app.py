@@ -33,6 +33,8 @@ from libs.interface.ym_mapping import NYCU_CAMPUSES, NYCU_TIME_SLOTS,NYCU_DAYS,N
 from libs.interface.get_time_slot import get_time_slot
 from libs.interface.stringutil import listring
 from libs.interface.stringutil import autonl
+import libs.interface.locale_zh_tw as zh_tw
+import libs.interface.locale_en_us as en_us
 
 def gen_pos(master):
     '''
@@ -51,7 +53,7 @@ class APP(ttk.Frame):
 
         self.var_setting()
         
-        self.window = ttk.Window(title="陽明交通大學選課系統",
+        self.window = ttk.Window(title=self.loc["NYCU_course_adding_system"],
                                  themename="darkly",
                                  resizable=(False,False),
                                  size=(1052,780))
@@ -93,6 +95,15 @@ class APP(ttk.Frame):
 
         self.acy = get_acysem(data_path)[0]
         self.sem = get_acysem(data_path)[1]
+        
+        #設置語言
+        self.lang = get_acysem(data_path)[2]
+        
+        match self.lang:
+            case "zh_tw":
+                self.loc = zh_tw.LOC
+            case "en_us":
+                self.loc = en_us.LOC
 
         #用來讓不同thread的runtime可以同步的參數
         self.retrn = [0]
@@ -113,7 +124,7 @@ class APP(ttk.Frame):
         #最上面的位置，篩選器提示列
         self.filter_frame = ttk.Frame(master=self.window, style=ttk.DARK)
         self.add_filter_btn = ttk.Button(master=self.filter_frame,
-                                         text="設置篩選條件",
+                                         text=self.loc["set_filter_condition"],
                                          style='seconady-link',
                                          command=self.add_filter_event
                                          )
@@ -126,7 +137,7 @@ class APP(ttk.Frame):
         
         #中間課表的位置，在資料載入前隱藏
         self.time_table_frame = ttk.Frame(master=self.window,style=ttk.PRIMARY)
-        self.info_label = ttk.Label(master=self.window,text="正在處理資料，請稍後")
+        self.info_label = ttk.Label(master=self.window,text=self.loc["handling"])
         self.info_label.pack()
         
         self.create_timetable_widget(self.time_table_frame)
@@ -134,13 +145,13 @@ class APP(ttk.Frame):
         #學年提示
 
         def switch_event() -> None:
-            self.ask_acysem_window = ttk.Toplevel(title="選擇學年",
+            self.ask_acysem_window = ttk.Toplevel(title=self.loc["select_acysem"],
                                                   size=(370,100),
                                                   resizable=(False,False),
                                                   position=gen_pos(self.window),
                                                   transient=self.window)
             
-            ttk.Label(master=self.ask_acysem_window,text="請輸入學年 (如：1131)").grid(row=0,column=0,padx=10,pady=20)
+            ttk.Label(master=self.ask_acysem_window,text=self.loc["please_enter_acysem"]).grid(row=0,column=0,padx=10,pady=20)
             self.acysem_entry = ttk.Entry(master=self.ask_acysem_window,
                                           width=5)
             self.acysem_entry.grid(row=0,column=1,padx=10,pady=20)
@@ -162,19 +173,19 @@ class APP(ttk.Frame):
 
                 os.remove("timetableDate.xlsx")
                 
-                Messagebox.show_info("內容已更新，請重新開啟軟體","提示",parent=self.ask_acysem_window,alert=True)
+                Messagebox.show_info(self.loc["contain_updated_reopen"],self.loc["info"],parent=self.ask_acysem_window,alert=True)
                 sys.exit()
 
             self.acysem_confirm_btn = ttk.Button(master=self.ask_acysem_window,
-                                                 text="確定",
+                                                 text=self.loc["confirm"],
                                                  command=lambda:btn_event())
             self.acysem_confirm_btn.grid(row=0,column=2,padx=10,pady=20)
             
         self.acysem_frame = ttk.Frame(master=self.window)
-        self.acysem_label = ttk.Label(master=self.acysem_frame,text=f"當前學年:{self.acy}學年度第{self.sem}學期")
+        self.acysem_label = ttk.Label(master=self.acysem_frame,text=self.loc["acysem_now"]+self.acy+self.loc["acy"]+self.sem+self.loc["semester"])
         self.acysem_label.pack(side="left")
         self.acysem_btn = ttk.Button(master=self.acysem_frame,
-                                     text="切換",
+                                     text=self.loc["switch"],
                                      style="info-link",
                                      command=switch_event)
         self.acysem_btn.pack(side="left")
@@ -183,14 +194,14 @@ class APP(ttk.Frame):
         ttk.Canvas(master=self.acysem_frame,width=550).pack(side="left")
 
         #學分提示
-        ttk.Label(master=self.acysem_frame,text="當前已選學分：").pack(side="left")
+        ttk.Label(master=self.acysem_frame,text=self.loc["credit_now"]).pack(side="left")
         self.credit_count_var = ttk.IntVar(value=0)
         ttk.Label(master=self.acysem_frame,textvariable=self.credit_count_var).pack(side="left")
 
         #最下方進度條的位置
         self.progressbar_obj = ttk.Floodgauge(bootstyle=ttk.INFO,
                                               font=(None,8),
-                                              mask="首次啟動軟體，正在下載課表...下載進度：{}%",
+                                              mask=self.loc["first_time_using_software"],
                                               length=1052)
         self.progressbar_obj.pack()
 
@@ -280,7 +291,7 @@ class APP(ttk.Frame):
 
         #建立結果視窗
         
-        self.result_window = ttk.Toplevel(title=f"選擇課程",
+        self.result_window = ttk.Toplevel(title=self.loc["select_course"],
                                           size=(1000,600),
                                           position=gen_pos(self.window),
                                           resizable=(True,False),
@@ -306,7 +317,7 @@ class APP(ttk.Frame):
 
         #提示文字
         self.result_info_label = ttk.Label(master=self.result_window,
-                                           text="正在查詢結果")
+                                           text=self.loc["searching"])
         self.result_info_label.pack()
 
         #頁面檢視器
@@ -319,7 +330,7 @@ class APP(ttk.Frame):
                                           time_slot if self.result_window.page == 1 else None)
 
             else:
-                Messagebox.show_warning(message="這是第一頁了",title="提示",alert=True)
+                Messagebox.show_warning(message=self.loc["first_page"],title=self.loc["info"],alert=True)
 
         def next_page_event() -> None:
             if self.result_window.page != len(self.result_window.split_df):
@@ -330,19 +341,19 @@ class APP(ttk.Frame):
                                           time_slot if self.result_window.page == 1 else None)
             
             else:
-                Messagebox.show_warning(message="這是最後一頁了",title="提示",alert=True)
+                Messagebox.show_warning(message=self.loc["last_page"],title=self.loc["info"],alert=True)
 
         self.page_view_frame = ttk.Frame(master=self.result_window)
 
         self.last_page_btn = ttk.Button(master=self.page_view_frame,
-                                        text="上一頁",
+                                        text=self.loc["go_last_page"],
                                         style="info-link",
                                         command=last_page_event)
         
         seperator = ttk.Canvas(master=self.page_view_frame,width=800,height=10)
 
         self.next_page_btn = ttk.Button(master=self.page_view_frame,
-                                        text="下一頁",
+                                        text=self.loc["go_next_page"],
                                         style="info-link",
                                         command=next_page_event)
 
@@ -361,7 +372,7 @@ class APP(ttk.Frame):
             if self.time_table[time_slot] is not None:
                 
                 cos_data_frame = ttk.Labelframe(master=self.result_scroll_frame,
-                                                text="課程資訊")
+                                                text=self.loc["course_info"])
                 cos_data_frame.grid(row=0,
                                     column=0,
                                     sticky="w",
@@ -371,16 +382,16 @@ class APP(ttk.Frame):
 
                 cos_data = get_data_from_index(self.df,self.time_table[time_slot])
 
-                label_formats = (f"課程名稱: {cos_data['cos_cname']}",
-                                f"類別: {cos_data['brief'] if not isinstance(cos_data['brief'],float) else ''}",
-                                f"本期課號: {cos_data['cos_id']}",
-                                f"永久課號: {cos_data['index']}",
-                                f"人數限制: {cos_data['num_limit'] if cos_data['num_limit'] != 9999 else '無限制'}",
-                                f"學分: {cos_data['cos_credit']}",
-                                f"每週時長: {cos_data['cos_hours']}",
-                                f"授課教師: {autonl(str(cos_data['teacher']))}",
-                                f"上課地點: {get_building_string(cos_data['cos_time'])}",
-                                f"備註: {autonl(cos_data['memo'] if not isna(cos_data['memo']) else '')}",
+                label_formats = (self.loc['course_name']+cos_data['cos_cname'],
+                                self.loc["course_type"]+(cos_data['brief'] if not isinstance(cos_data['brief'],float) else ''),
+                                self.loc["course_no"]+str(cos_data['cos_id']),
+                                self.loc["permanent_id"]+cos_data['index'],
+                                self.loc["student_limit"]+str(cos_data['num_limit'] if cos_data['num_limit'] != 9999 else self.loc["no_limit"]),
+                                self.loc["course_credit"]+str(cos_data['cos_credit']),
+                                self.loc["hour_per_week"]+str(cos_data['cos_hours']),
+                                self.loc["course_teacher"]+autonl(str(cos_data['teacher'])),
+                                self.loc["course_loaction"]+get_building_string(cos_data['cos_time']),
+                                self.loc["memo"]+(autonl(cos_data['memo'] if not isna(cos_data['memo']) else '')),
                                 )
 
                 #敘述內容
@@ -391,7 +402,7 @@ class APP(ttk.Frame):
 
                 if not isna(cos_data['crsoutline_type']):
                     ttk.Button(master=cos_data_frame,
-                            text= "點我看課綱",
+                            text= self.loc["click_me_see_outline"],
                             style="link",
                             command=lambda link = outline_url:self.goToLink(link),
                             cursor="hand2").pack(anchor="w")
@@ -399,14 +410,14 @@ class APP(ttk.Frame):
                 #連結是個按鈕
                 if not isna(cos_data['URL']):
                     ttk.Button(master=cos_data_frame,
-                            text=f"連結: {cos_data['URL'] if not isna(cos_data['URL']) else ''}",
+                            text=self.loc["link"] + (cos_data['URL'] if not isna(cos_data['URL']) else ''),
                             style="link",
                             command=lambda link = cos_data['URL']:self.goToLink(link),
                             cursor="hand2").pack(anchor="w")
                 
                 #退選按鈕
                 drop_btn = ttk.Button(master=cos_data_frame,
-                                    text="退選",
+                                    text=self.loc["drop"],
                                     style="danger-outline",
                                     width=18,
                                     command=lambda x = time_slot:self.drop_event(x))
@@ -436,7 +447,7 @@ class APP(ttk.Frame):
             #因為有老師的名字叫做1.0因此我需要寫一個防禦程式...幹
             if isinstance(name,str):
                 if len(name) > 7:
-                    name = name.split("、")[0] + "等人"
+                    name = name.split(self.loc["comma"])[0] + self.loc["and_others"]
 
             ttk.Label(master=self.result_scroll_frame,
                     text=name,
@@ -523,8 +534,8 @@ class APP(ttk.Frame):
         #若存在衝突課程，發出提示
         if len(conflict_coses) != 0:
 
-            resp = Messagebox.okcancel(message=f"該課程與以下課程衝突：{listring(conflict_cos_name)}",
-                                       title="課程衝突！",
+            resp = Messagebox.okcancel(message=self.loc["this_course_conflict_with"] + listring(conflict_cos_name),
+                                       title=self.loc["course_conflict"],
                                        alert=True,
                                        parent=self.window)
 
@@ -605,7 +616,7 @@ class APP(ttk.Frame):
         '''
 
         #建立視窗
-        self.filter_window = ttk.Toplevel(title="設置篩選器",
+        self.filter_window = ttk.Toplevel(title=self.loc["set_filter_condition"],
                                           size=(630,320),
                                           resizable=(False,False),
                                           position=gen_pos(self.window),
@@ -613,7 +624,7 @@ class APP(ttk.Frame):
 
         #校區篩選器
         self.campus_filter_frame = ttk.Labelframe(master=self.filter_window,
-                                                  text="校區")
+                                                  text=self.loc["campus"])
         
         self.campus_check_btn = dict.fromkeys(NYCU_CAMPUSES)
         self.campus_check_var = dict.fromkeys(NYCU_CAMPUSES)
@@ -624,7 +635,7 @@ class APP(ttk.Frame):
 
             check_btn = ttk.Checkbutton(master=self.campus_filter_frame,
                                         style="round-toggle",
-                                        text=check_btn_index,
+                                        text=self.loc[check_btn_index],
                                         variable=self.campus_check_var[check_btn_index],
                                         onvalue=True,
                                         offvalue=False)
@@ -635,7 +646,7 @@ class APP(ttk.Frame):
 
         #類別篩選器
         self.type_filter_frame = ttk.Labelframe(master=self.filter_window,
-                                                  text="類別(若無勾選則預設全部)")
+                                                  text=self.loc["type"])
 
         self.type_check_btn = dict.fromkeys(EZ_TYPE)
         self.type_check_var = dict.fromkeys(EZ_TYPE)
@@ -646,7 +657,7 @@ class APP(ttk.Frame):
 
             check_btn = ttk.Checkbutton(master=self.type_filter_frame,
                                         style="info-round-toggle",
-                                        text=check_btn_index,
+                                        text=self.loc[check_btn_index],
                                         variable=self.type_check_var[check_btn_index],
                                         onvalue=True,
                                         offvalue=False)
@@ -661,7 +672,7 @@ class APP(ttk.Frame):
 
         #課程名稱
         self.name_filter_frame = ttk.LabelFrame(master=self.entry_frame,
-                                                text="課程關鍵字")
+                                                text=self.loc["course_name_keyword"])
         
         self.name_entry_var = ttk.StringVar()
         self.name_entry = ttk.Entry(master=self.name_filter_frame,width=20,textvariable=self.name_entry_var)
@@ -671,7 +682,7 @@ class APP(ttk.Frame):
 
         #教師名稱
         self.teacher_filter_frame = ttk.LabelFrame(master=self.entry_frame,
-                                                text="教師")
+                                                text=self.loc["teacher"])
         self.teacher_entry_var = ttk.StringVar()
         self.teacher_entry = ttk.Entry(master=self.teacher_filter_frame,width=12,textvariable=self.teacher_entry_var)
         self.teacher_entry.pack(side="left",padx=10,pady=10)
@@ -681,12 +692,12 @@ class APP(ttk.Frame):
         #按鈕
 
         self.confirm_filter_btn = ttk.Button(master=self.entry_frame,
-                                             text="確定",
+                                             text=self.loc["confirm"],
                                              command=self.confirm_filter_event)
         self.confirm_filter_btn.pack(side="right",padx=0)
 
         self.reset_filter_btn = ttk.Button(master=self.entry_frame,
-                                           text="重設",
+                                           text=self.loc["reset"],
                                            style="primary-outline",
                                            command=self.reset_filter_event)
         self.reset_filter_btn.pack(side="right",padx=10)
@@ -829,8 +840,8 @@ class APP(ttk.Frame):
         #runtime回傳1代表需要顯示messagebox提示查無課程
         if self.retrn[0] == 1:
             self.retrn[0] = 0
-            Messagebox.show_warning(message="查無課程",
-                                    title="提示",
+            Messagebox.show_warning(message=self.loc["course_not_found"],
+                                    title=self.loc["info"],
                                     parent=self.window,
                                     alert=True)
             
@@ -842,8 +853,8 @@ class APP(ttk.Frame):
         '''
         關閉軟體的提示
         '''
-        resp = Messagebox.okcancel(message="確定要離開嗎？",
-                                   title="提示",
+        resp = Messagebox.okcancel(message=self.loc["confirm_to_exit"],
+                                   title=self.loc["info"],
                                    parent=self.window)
         if resp == "OK":
             self.window.destroy()
@@ -861,7 +872,7 @@ class APP(ttk.Frame):
         '''
         import webbrowser as web
 
-        resp = Messagebox.okcancel("即將前往網站，確定繼續？","提示",True,self.result_window)
+        resp = Messagebox.okcancel(self.loc["confirm_to_website"],self.loc["info"],True,self.result_window)
 
         if resp == "OK":web.open(link)
 

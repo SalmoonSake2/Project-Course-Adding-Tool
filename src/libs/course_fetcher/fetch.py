@@ -209,5 +209,6 @@ def get_acysem(path:str) -> tuple:
         for line in file:
             acy = line.split(",")[0]
             sem = line.split(",")[1]
+            lang = line.split(",")[2]
 
-    return (acy,sem)
+    return (acy,sem,lang)
