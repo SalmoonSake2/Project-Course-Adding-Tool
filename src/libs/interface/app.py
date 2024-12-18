@@ -42,7 +42,7 @@ def gen_pos(master):
     '''
     return (master.winfo_x()+200,master.winfo_y()+150)
 
-class APP(ttk.Frame):
+class APP:
     '''
     用以作為應用程式架構的類
     '''
@@ -50,13 +50,19 @@ class APP(ttk.Frame):
         '''
         初始化應用程式
         '''
-
-        self.var_setting()
-        
-        self.window = ttk.Window(title=self.loc["NYCU_course_adding_system"],
-                                 themename="darkly",
+        self.window = ttk.Window(themename="darkly",
                                  resizable=(False,False),
                                  size=(1052,780))
+        self.window.withdraw()
+
+        self.var_setting()
+        self.window.mainloop()
+        
+    def real_init(self) -> None:
+        '''
+        真正的起始位置，會在語言選擇完後被呼叫
+        '''
+        self.window.title(self.loc["NYCU_course_adding_system"])
         
         path = os.path.join(os.path.join(os.path.dirname(__file__),"../../../assets"),"icon.ico")
         
@@ -69,7 +75,6 @@ class APP(ttk.Frame):
         #配置完成，開始工作。
         self.window.protocol("WM_DELETE_WINDOW",self.onCloseWindow)
         self.tick()
-        self.window.mainloop()
 
     def var_setting(self) -> None:
         '''
@@ -86,8 +91,16 @@ class APP(ttk.Frame):
         self.envar['filter_teacher'] = ""
         self.envar['is_selecting'] = False
 
+        #保持引用的圖片
+        self.images = []
+
         #用來儲存所有課程資訊
         self.df:DataFrame = [None]
+
+        #用來讓不同thread的runtime可以同步的參數
+        self.retrn = [0]
+
+        self.time_table:dict = dict.fromkeys(NYCU_TIME_SLOTS)
 
         #當前學年
 
@@ -98,20 +111,61 @@ class APP(ttk.Frame):
         
         #設置語言
         self.lang = get_acysem(data_path)[2]
+
+        #停止程式而非繼續後續的動作
+        def onCloseLangWindow() -> None:
+            import sys
+            sys.exit()
         
-        match self.lang:
-            case "zh_tw":
-                self.loc = zh_tw.LOC
-            case "en_us":
-                self.loc = en_us.LOC
+        #設置語言鍵值對
+        def locmapping() -> None:
+            match self.lang:
+                case "zh_tw":
+                    self.loc = zh_tw.LOC
+                case "en_us":
+                    self.loc = en_us.LOC
 
-        #用來讓不同thread的runtime可以同步的參數
-        self.retrn = [0]
+        #設置語言並關閉視窗
+        def set_lang(lang:str) -> None:
+            with open("user_data","w",encoding="utf-8") as file:
+                file.write(self.acy+","+self.sem+","+lang)
+            
+            self.lang = lang
+            locmapping()
+            self.lang_select_window.destroy()
+            self.real_init()
 
-        self.time_table:dict = dict.fromkeys(NYCU_TIME_SLOTS)
+        #尚未設置語言
+        if self.lang == "x":
+            self.lang_select_window = ttk.Toplevel(title="Select Your language",
+                                                 size=(800,600),
+                                                 resizable=(False,False),
+                                                 transient=self.window)
 
-        #保持引用的圖片
-        self.images = []
+            path = os.path.join(os.path.join(os.path.dirname(__file__),"../../../assets"),"icon.ico")
+            self.lang_select_window.wm_iconbitmap(bitmap=path)
+            self.lang_select_window.protocol("WM_DELETE_WINDOW",onCloseLangWindow)
+
+            #配置物件
+            self.create_photo("zh_tw")
+            self.create_photo("en_us")
+
+            ttk.Canvas(master=self.lang_select_window,height=120).pack()
+            ttk.Label(master=self.lang_select_window,text="選擇你的語言",font="Arial 24").pack()
+            ttk.Label(master=self.lang_select_window,text="Choose Your Language",font="Arial 12").pack(pady=10)
+
+            self.lang_button_frame = ttk.Frame(master=self.lang_select_window)
+            self.lang_button_frame.pack(pady=40)
+
+            ttk.Button(master=self.lang_button_frame,image="zh_tw",style="outline",command=lambda x="zh_tw":set_lang(x)).pack(side="left",padx=80)
+            ttk.Button(master=self.lang_button_frame,image="en_us",style="outline",command=lambda x="en_us":set_lang(x)).pack(side="left",padx=80)
+
+            locmapping()
+        
+        #已經有語言了
+        else:
+            locmapping()
+            self.real_init()
 
     def wideget_setting(self) -> None:
         '''
@@ -198,8 +252,9 @@ class APP(ttk.Frame):
         self.credit_count_var = ttk.IntVar(value=0)
         ttk.Label(master=self.acysem_frame,textvariable=self.credit_count_var).pack(side="left")
 
-        #最下方進度條的位置
-        self.progressbar_obj = ttk.Floodgauge(bootstyle=ttk.INFO,
+        #進度條的位置
+        self.progressbar_obj = ttk.Floodgauge(master=self.window,
+                                              bootstyle="info",
                                               font=(None,8),
                                               mask=self.loc["first_time_using_software"],
                                               length=1052)
