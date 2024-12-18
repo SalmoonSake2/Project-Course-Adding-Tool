@@ -112,6 +112,7 @@ LOC = {
     '人文關懷':'Humanity Caring', 
     '社會參與':'Social Participant', 
     '領域課程-公民與倫理思考':'Civil & Ethic',
+    "音樂分組":"Music",
     "1":"Autumn",
     "2":"Spring"
 }
