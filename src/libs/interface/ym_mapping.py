@@ -32,12 +32,12 @@ def get_campus(cos_time_string:str) -> list[str] | None:
     
     return result
 
-def get_building_string(cos_time_string:str) -> str:
+def get_building_string(cos_time_string:str,lang:str) -> str:
     '''
     獲取cos_time欄位中的資訊，並解析為人類可讀的文字
     '''
-
-    PATTERNS   = {'-YN': '於護理館', 
+    if lang == "zh_tw":
+        PATTERNS   = {'-YN': '於護理館', 
                   '-PhE':"於任意運動場",
                  '-YE': '於實驗大樓', 
                  '-YR': '於守仁樓', 
@@ -107,6 +107,78 @@ def get_building_string(cos_time_string:str) -> str:
                  "S":"週六",
                  "U":"週日",
                  "-":"於線上或未知地點"}
+        
+    else:
+        PATTERNS   = {'-YN': ' at nursing building', 
+                  '-PhE':" at any possible place for exercise",
+                 '-YE': ' at experimental building', 
+                 '-YR': ' at shouren building', 
+                 '-YS': ' at medical building Ⅱ', 
+                 '-YB': ' at biomedical engineering building', 
+                 '-YX': ' at zhi xing building', 
+                 '-YD': ' at dentistry building', 
+                 '-YK': ' at traditional medical building', 
+                 '-YT': ' at teaching building', 
+                 '-YM': ' at medical building', 
+                 '-YL': ' at library, information and research building', 
+                 '-YA': ' at auditorium and activity center', 
+                 '-YH': ' at zhi-he building', 
+                 '-YC': ' at biomedical building', 
+                 '-AS': ' at academia sinica', 
+                 '-PH': ' at taipei veterans general hospital', 
+                 '-CH': ' at taichung veterans general hospital', 
+                 '-KH': ' at kaohsiung veterans general hospital', 
+                 '-LI': ' at laboratory Hhll', 
+                 '-BA': ' at biotech experiment building', 
+                 '-BB': ' at biotech experiment building 2', 
+                 '-BI': ' at bio-ict building', 
+                 '-EA': ' at engineering building 1', 
+                 '-EB': ' at engineering building 2', 
+                 '-EC': ' at engineering building 3', 
+                 '-ED': ' at engineering building 4', 
+                 '-EE': ' at engineering building 5', 
+                 '-EF': ' at engineering building 6', 
+                 '-MB': ' at management building 2', 
+                 '-SA': ' at science building 1', 
+                 '-SB': ' at science building 2', 
+                 '-SC': ' at science building 3', 
+                 '-AC': ' at students activity center',  
+                 '-AB': ' at assembly building 1 basement', 
+                 '-HA': ' at humanities and social sciences building 1',  
+                 '-HB': ' at humanities and social sciences building 2', 
+                 '-HC': ' at humanities and social sciences building 3', 
+                 '-CY': ' at cpt building', 
+                 '-EO': ' at electro optical(tin ka ping photonic building）', 
+                 '-EV': ' at environmental engineering building', 
+                 '-CS': ' at information technology service center', 
+                 '-ES': ' at microelectronics and information system research center', 
+                 '-CE': ' at civil engineering lab', 
+                 '-AD': ' at auditorium', 
+                 '-Lib': ' at library and information center', 
+                 '-TA': ' at conference room', 
+                 '-TD': ' at classrooms', 
+                 '-TC': ' at lecture hall', 
+                 '-CM': ' at chi mei building', 
+                 '-HK': ' at hakka building',
+                 '-F': ' at humanities and social sciences building 2',
+                 '-A': ' at assembly building 1',
+                 '-C': ' at chu ming building', 
+                 '-E': ' at education building', 
+                 '-M': ' at management building 1', 
+                 "[YM]":" classroom[ym]",
+                 "[GF]":" classroom[gf]",#交大
+                 "[BA]":" classroom[ba]",
+                 "[BM]":" classroom[bm]",
+                 "[GR]":" classroom[gr]",
+                 "[LJ]":" classroom[lj]",
+                 "M":"mon.",
+                 "T":"tue.",
+                 "W":"wed.",
+                 "R":"thr.",
+                 "F":"fri",
+                 "S":"sat.",
+                 "U":"sun.",
+                 "-":" online or other places"}
     
     result = cos_time_string
 

@@ -437,16 +437,26 @@ class APP:
 
                 cos_data = get_data_from_index(self.df,self.time_table[time_slot])
 
+                #類型的字串需要進行本地化處理
+                cos_type_string = ""
+                if not isinstance(cos_data['brief'],float):
+                    type_list = cos_data['brief'].split(",")
+                    
+                    for n,x in enumerate(type_list):
+                        if n != 0:
+                            cos_type_string += ", "
+                        cos_type_string += self.loc[x]
+
                 label_formats = (self.loc['course_name']+
                                  (cos_data['cos_cname'] if self.lang == "zh_tw" else cos_data['cos_ename']),
-                                self.loc["course_type"]+(cos_data['brief'] if not isinstance(cos_data['brief'],float) else ''),
+                                self.loc["course_type"]+cos_type_string,
                                 self.loc["course_no"]+str(cos_data['cos_id']),
                                 self.loc["permanent_id"]+cos_data['index'],
                                 self.loc["student_limit"]+str(cos_data['num_limit'] if cos_data['num_limit'] != 9999 else self.loc["no_limit"]),
                                 self.loc["course_credit"]+str(cos_data['cos_credit']),
                                 self.loc["hour_per_week"]+str(cos_data['cos_hours']),
                                 self.loc["course_teacher"]+autonl(str(cos_data['teacher'])),
-                                self.loc["course_loaction"]+get_building_string(cos_data['cos_time']),
+                                self.loc["course_loaction"]+get_building_string(cos_data['cos_time'],self.lang),
                                 self.loc["memo"]+(autonl(cos_data['memo'] if not isna(cos_data['memo']) else '')),
                                 )
 
