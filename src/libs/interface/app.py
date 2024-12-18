@@ -146,7 +146,7 @@ class APP(ttk.Frame):
 
         def switch_event() -> None:
             self.ask_acysem_window = ttk.Toplevel(title=self.loc["select_acysem"],
-                                                  size=(370,100),
+                                                  size=(370 if self.lang == "zh_tw" else 470,100),
                                                   resizable=(False,False),
                                                   position=gen_pos(self.window),
                                                   transient=self.window)
@@ -182,7 +182,7 @@ class APP(ttk.Frame):
             self.acysem_confirm_btn.grid(row=0,column=2,padx=10,pady=20)
             
         self.acysem_frame = ttk.Frame(master=self.window)
-        self.acysem_label = ttk.Label(master=self.acysem_frame,text=self.loc["acysem_now"]+self.acy+self.loc["acy"]+self.sem+self.loc["semester"])
+        self.acysem_label = ttk.Label(master=self.acysem_frame,text=self.loc["acysem_now"]+self.acy+self.loc["acy"]+self.loc[self.sem]+self.loc["semester"])
         self.acysem_label.pack(side="left")
         self.acysem_btn = ttk.Button(master=self.acysem_frame,
                                      text=self.loc["switch"],
@@ -191,7 +191,7 @@ class APP(ttk.Frame):
         self.acysem_btn.pack(side="left")
         
         #分隔線
-        ttk.Canvas(master=self.acysem_frame,width=550).pack(side="left")
+        ttk.Canvas(master=self.acysem_frame,width=550 if self.lang == "zh_tw" else 425).pack(side="left")
 
         #學分提示
         ttk.Label(master=self.acysem_frame,text=self.loc["credit_now"]).pack(side="left")
@@ -350,7 +350,7 @@ class APP(ttk.Frame):
                                         style="info-link",
                                         command=last_page_event)
         
-        seperator = ttk.Canvas(master=self.page_view_frame,width=800,height=10)
+        seperator = ttk.Canvas(master=self.page_view_frame,width=800 if self.lang == "zh_tw" else 770,height=10)
 
         self.next_page_btn = ttk.Button(master=self.page_view_frame,
                                         text=self.loc["go_next_page"],
@@ -382,7 +382,8 @@ class APP(ttk.Frame):
 
                 cos_data = get_data_from_index(self.df,self.time_table[time_slot])
 
-                label_formats = (self.loc['course_name']+cos_data['cos_cname'],
+                label_formats = (self.loc['course_name']+
+                                 (cos_data['cos_cname'] if self.lang == "zh_tw" else cos_data['cos_ename']),
                                 self.loc["course_type"]+(cos_data['brief'] if not isinstance(cos_data['brief'],float) else ''),
                                 self.loc["course_no"]+str(cos_data['cos_id']),
                                 self.loc["permanent_id"]+cos_data['index'],
@@ -398,7 +399,7 @@ class APP(ttk.Frame):
                 for label_format in label_formats:
                     ttk.Label(master=cos_data_frame,text=label_format,width=90).pack(anchor="w")
 
-                outline_url = f"https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy={cos_data['acy']}&Sem={cos_data["sem"]}&CrsNo={cos_data["cos_id"]}&lang=zh-tw"
+                outline_url = f"https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy={cos_data['acy']}&Sem={cos_data["sem"]}&CrsNo={cos_data["cos_id"]}&lang={"zh-tw" if self.lang == "zh_tw" else "en-us"}"
 
                 if not isna(cos_data['crsoutline_type']):
                     ttk.Button(master=cos_data_frame,
@@ -425,7 +426,7 @@ class APP(ttk.Frame):
                 offset = 2
 
         #課程名稱
-        for index,name in enumerate(df['cos_cname']):
+        for index,name in enumerate(df['cos_cname'] if self.lang == "zh_tw" else df["cos_ename"]):
 
             cos_index = df['index'].iat[index]
             select_event = lambda cos = cos_index:self.select_course_event(cos)
@@ -474,7 +475,7 @@ class APP(ttk.Frame):
             
             for campus in campuses:
                 ttk.Label(master=campus_frame,
-                        text=campus).pack(side="left",padx=3)
+                        text=self.loc[campus]).pack(side="left",padx=3)
             
         #類型
         for index,cos_type in enumerate(df['brief']):
@@ -495,7 +496,7 @@ class APP(ttk.Frame):
             #這不是錯字，是為了避免使用到python的關鍵字
             for l_index,tyqe in enumerate(types):
                 label_obj = ttk.Label(master=types_frame,
-                                    text=types[l_index],
+                                    text=self.loc[types[l_index]],
                                     style=(ttk.INVERSE,COLORMAPPING[tyqe]))
                 label_obj.pack(side="right",padx=3)
 
@@ -563,8 +564,9 @@ class APP(ttk.Frame):
                 show_text = ""
 
             else:
-                show_text = get_data_from_index(df=self.df,
-                                                index=self.time_table[time_slot])['cos_cname']
+                cos_data = get_data_from_index(df=self.df,
+                                                index=self.time_table[time_slot])
+                show_text = cos_data['cos_cname'] if self.lang == "zh_tw" else cos_data['cos_ename']
             
             self.table_obj[time_slot].config(text=show_text)
         
@@ -617,7 +619,7 @@ class APP(ttk.Frame):
 
         #建立視窗
         self.filter_window = ttk.Toplevel(title=self.loc["set_filter_condition"],
-                                          size=(630,320),
+                                          size=(630,320 if self.lang == "zh_tw" else 380),
                                           resizable=(False,False),
                                           position=gen_pos(self.window),
                                           transient=self.window)
@@ -629,7 +631,7 @@ class APP(ttk.Frame):
         self.campus_check_btn = dict.fromkeys(NYCU_CAMPUSES)
         self.campus_check_var = dict.fromkeys(NYCU_CAMPUSES)
 
-        for check_btn_index in self.campus_check_btn:
+        for p_index, check_btn_index in enumerate(self.campus_check_btn):
             
             self.campus_check_var[check_btn_index] = ttk.BooleanVar(name=check_btn_index)
 
@@ -639,7 +641,14 @@ class APP(ttk.Frame):
                                         variable=self.campus_check_var[check_btn_index],
                                         onvalue=True,
                                         offvalue=False)
-            check_btn.pack(side="left",padx=10,pady=10)
+            
+            #根據語言調整排版
+            if self.lang == "zh_tw":
+                check_btn.grid(row=0,column=p_index,padx=10,pady=10,sticky="w")
+            
+            else:
+                check_btn.grid(row=p_index//3,column=p_index%3,padx=10,pady=10,sticky="w")
+
             self.campus_check_btn[check_btn_index] = check_btn
 
         self.campus_filter_frame.pack(anchor="w",padx=10,pady=10)
