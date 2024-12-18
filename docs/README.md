@@ -22,6 +22,10 @@ pip install openpyxl
 pip install -r requirements.txt
 ```
 
+如果使用的是conda (Anaconda) 環境，則使用
+```
+conda install --yes --file requirements.txt
+```
 ## 執行
 以python執行位於src目錄下的run.py檔案即可。
 
