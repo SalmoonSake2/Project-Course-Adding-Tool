@@ -7,6 +7,8 @@
 
 **注意:**
 本軟體僅提供模擬選課的介面，不具備真實選課的功能；如需選課請前往學校單一入口登入選課系統。
+本軟體不適用於Mac系統。
+本軟體僅提供課程資訊，如出現與實際情況不符之情形，後果自行承擔。
 
 ## 安裝
 依序於終端Terminal執行以下命令：
@@ -57,7 +59,7 @@ conda install --yes --file requirements.txt
 ![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case9.png)
 
 - 切換課表(須重啟)  
-- ![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case10.png)
+![image](https://github.com/SalmoonSake2/Project---Course-Adding-Tool/blob/main/docs/show_case10.png)
 
 ## 備註事項
 - 希望老師能給A+
@@ -67,5 +69,28 @@ conda install --yes --file requirements.txt
 - Azusa Kaze
 - Salmoon Sake
 
+## 引用
+- pillow (https://pypi.org/project/pillow/)  
+  用於圖片處理
+  
+- ttkbootstrap (https://pypi.org/project/ttkbootstrap/)  
+  用於使用者介面創建
+  
+- pandas (https://pypi.org/project/pandas/)  
+  用於資料儲存及篩選
+  
+- requests (https://pypi.org/project/requests/)  
+  用於課程資訊擷取
+  
+- openpyxl (https://pypi.org/project/openpyxl/)  
+  用於Excel檔案讀寫
+
 ## 版本資訊
 v1.3.1 updated in: 2024.12.18
+
+## changinglog (1.3.*)
+- 新增了英文模式
+- 改善載入速度
+- 修復錯誤d0077: 在某些時段的課程會突然閃退
+- 修復錯誤d0231: 選擇英文模式後依然有中文時段出現
+- 睡了午覺
