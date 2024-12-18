@@ -28,6 +28,8 @@ pip install -r requirements.txt
 ```
 conda install --yes --file requirements.txt
 ```
+如果你是修這學期計概的學生，而且照著老師教的去做，應該就是conda環境。
+
 ## 執行
 以python執行位於src目錄下的run.py檔案即可。
 
