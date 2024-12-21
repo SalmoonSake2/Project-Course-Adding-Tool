@@ -11,7 +11,12 @@
 本軟體僅提供課程資訊，如出現與實際情況不符之情形，後果自行承擔。
 
 ## 安裝
-依序於終端Terminal執行以下命令：
+
+下載官方Python:  
+https://www.python.org/downloads/  
+並依照指示安裝
+
+依序於終端Terminal(或命令提示字元)執行以下命令：
 ```
 pip install pillow
 pip install ttkbootstrap
