@@ -11,7 +11,12 @@
 本軟體僅提供課程資訊，如出現與實際情況不符之情形，後果自行承擔。
 
 ## 安裝
-依序於終端Terminal執行以下命令：
+
+下載官方Python:  
+https://www.python.org/downloads/  
+並依照指示安裝
+
+依序於終端Terminal(或命令提示字元)執行以下命令：
 ```
 pip install pillow
 pip install ttkbootstrap
@@ -89,4 +94,5 @@ v1.3.1 updated in: 2024.12.18
 - 改善載入速度
 - 修復錯誤d0077: 在某些時段的課程會突然閃退
 - 修復錯誤d0231: 選擇英文模式後依然有中文時段出現
+- 修復錯誤d0232: 切換年份後開啟會閃退
 - 睡了午覺
