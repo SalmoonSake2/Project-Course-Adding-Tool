@@ -220,7 +220,7 @@ class APP:
 
                 if not re.match(r"^11\d[12]$",string):return
                 with open("user_data","w",encoding="utf-8") as file:
-                    file.write(string[:3]+","+string[3:])
+                    file.write(string[:3]+","+string[3:]+","+self.lang)
                 
                 import os
                 import sys
