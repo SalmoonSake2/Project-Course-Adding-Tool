@@ -71,8 +71,6 @@ pip install -r requirements.txt
 - Salmoon Sake
 
 ## 引用
-- pillow (https://pypi.org/project/pillow/)  
-  用於圖片處理
   
 - ttkbootstrap (https://pypi.org/project/ttkbootstrap/)  
   用於使用者介面創建
