@@ -560,9 +560,21 @@ class APP:
 
             #這不是錯字，是為了避免使用到python的關鍵字
             for l_index,tyqe in enumerate(types):
+
+                try:
+                    label_text = self.loc[types[l_index]]
+                except KeyError:
+                    label_text = types[l_index]
+                
+                try:
+                    label_style = (ttk.INVERSE,COLORMAPPING[tyqe])
+                
+                except KeyError:
+                    label_style = (ttk.INVERSE,ttk.SECONDARY)
+
                 label_obj = ttk.Label(master=types_frame,
-                                    text=self.loc[types[l_index]],
-                                    style=(ttk.INVERSE,COLORMAPPING[tyqe]))
+                                    text=label_text,
+                                    style=label_style)
                 label_obj.pack(side="right",padx=3)
 
         self.result_info_label.destroy()
